@@ -2,13 +2,12 @@ import { Color, DisplayMode, Engine, FadeInOut } from "excalibur";
 import { loader } from "./resources";
 import { MyLevel } from "./level";
 
-// Goal is to keep main.ts small and just enough to configure the engine
-
 const game = new Engine({
-  width: 800, // Logical width and height in game pixels
+  width: 800, 
   height: 600,
-  displayMode: DisplayMode.FitScreenAndFill, // Display mode tells excalibur how to fill the window
-  pixelArt: true, // pixelArt will turn on the correct settings to render pixel art without jaggies or shimmering artifacts
+  displayMode: DisplayMode.FitScreen,
+  backgroundColor: Color.fromHex("#17191f"),
+  pixelArt: true,
   scenes: {
     start: MyLevel
   },
@@ -24,7 +23,7 @@ game.start('start', { // name of the start scene 'start'
   inTransition: new FadeInOut({ // Optional in transition
     duration: 1000,
     direction: 'in',
-    color: Color.ExcaliburBlue
+    color: Color.fromHex("#17191f"),
   })
 }).then(() => {
   // Do something after the game starts
