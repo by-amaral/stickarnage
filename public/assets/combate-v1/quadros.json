@@ -1,0 +1,1154 @@
+{
+  "cell": 64,
+  "columns": 4,
+  "rows": 4,
+  "orientation": "right",
+  "integration": "not integrated",
+  "atlases": {
+    "jogador": {
+      "file": "jogador.png",
+      "frames": [
+        {
+          "name": "parado-1",
+          "x": 0,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            20,
+            16,
+            44,
+            58
+          ],
+          "file": "sprites/jogador/parado-1.png"
+        },
+        {
+          "name": "parado-2",
+          "x": 64,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            20,
+            15,
+            44,
+            58
+          ],
+          "file": "sprites/jogador/parado-2.png"
+        },
+        {
+          "name": "parado-3",
+          "x": 128,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            19,
+            14,
+            44,
+            58
+          ],
+          "file": "sprites/jogador/parado-3.png"
+        },
+        {
+          "name": "parado-4",
+          "x": 192,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            20,
+            15,
+            44,
+            58
+          ],
+          "file": "sprites/jogador/parado-4.png"
+        },
+        {
+          "name": "corrida-1",
+          "x": 0,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            18,
+            16,
+            45,
+            58
+          ],
+          "file": "sprites/jogador/corrida-1.png"
+        },
+        {
+          "name": "corrida-2",
+          "x": 64,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            20,
+            16,
+            44,
+            58
+          ],
+          "file": "sprites/jogador/corrida-2.png"
+        },
+        {
+          "name": "corrida-3",
+          "x": 128,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            18,
+            17,
+            46,
+            58
+          ],
+          "file": "sprites/jogador/corrida-3.png"
+        },
+        {
+          "name": "corrida-4",
+          "x": 192,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            19,
+            17,
+            44,
+            58
+          ],
+          "file": "sprites/jogador/corrida-4.png"
+        },
+        {
+          "name": "dash-1",
+          "x": 0,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            21,
+            46,
+            58
+          ],
+          "file": "sprites/jogador/dash-1.png"
+        },
+        {
+          "name": "dash-2",
+          "x": 64,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            20,
+            50,
+            58
+          ],
+          "file": "sprites/jogador/dash-2.png"
+        },
+        {
+          "name": "dash-3",
+          "x": 128,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            11,
+            24,
+            53,
+            58
+          ],
+          "file": "sprites/jogador/dash-3.png"
+        },
+        {
+          "name": "dash-4",
+          "x": 192,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            9,
+            29,
+            55,
+            58
+          ],
+          "file": "sprites/jogador/dash-4.png"
+        },
+        {
+          "name": "morte-1",
+          "x": 0,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            18,
+            46,
+            58
+          ],
+          "file": "sprites/jogador/morte-1.png"
+        },
+        {
+          "name": "morte-2",
+          "x": 64,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            15,
+            22,
+            49,
+            58
+          ],
+          "file": "sprites/jogador/morte-2.png"
+        },
+        {
+          "name": "morte-3",
+          "x": 128,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            31,
+            51,
+            58
+          ],
+          "file": "sprites/jogador/morte-3.png"
+        },
+        {
+          "name": "morte-4",
+          "x": 192,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            8,
+            42,
+            56,
+            58
+          ],
+          "file": "sprites/jogador/morte-4.png"
+        }
+      ]
+    },
+    "inimigos": {
+      "file": "inimigos.png",
+      "frames": [
+        {
+          "name": "atirador-corrida-1",
+          "x": 0,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            16,
+            49,
+            58
+          ],
+          "file": "sprites/inimigos/atirador-corrida-1.png"
+        },
+        {
+          "name": "atirador-corrida-2",
+          "x": 64,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            16,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/atirador-corrida-2.png"
+        },
+        {
+          "name": "atirador-corrida-3",
+          "x": 128,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            15,
+            15,
+            48,
+            58
+          ],
+          "file": "sprites/inimigos/atirador-corrida-3.png"
+        },
+        {
+          "name": "atirador-corrida-4",
+          "x": 192,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            16,
+            49,
+            58
+          ],
+          "file": "sprites/inimigos/atirador-corrida-4.png"
+        },
+        {
+          "name": "veloz-corrida-1",
+          "x": 0,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            15,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/veloz-corrida-1.png"
+        },
+        {
+          "name": "veloz-corrida-2",
+          "x": 64,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            15,
+            16,
+            49,
+            58
+          ],
+          "file": "sprites/inimigos/veloz-corrida-2.png"
+        },
+        {
+          "name": "veloz-corrida-3",
+          "x": 128,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            16,
+            15,
+            48,
+            58
+          ],
+          "file": "sprites/inimigos/veloz-corrida-3.png"
+        },
+        {
+          "name": "veloz-corrida-4",
+          "x": 192,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            15,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/veloz-corrida-4.png"
+        },
+        {
+          "name": "pesado-corrida-1",
+          "x": 0,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            13,
+            14,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/pesado-corrida-1.png"
+        },
+        {
+          "name": "pesado-corrida-2",
+          "x": 64,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            16,
+            15,
+            48,
+            58
+          ],
+          "file": "sprites/inimigos/pesado-corrida-2.png"
+        },
+        {
+          "name": "pesado-corrida-3",
+          "x": 128,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            14,
+            47,
+            58
+          ],
+          "file": "sprites/inimigos/pesado-corrida-3.png"
+        },
+        {
+          "name": "pesado-corrida-4",
+          "x": 192,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            13,
+            14,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/pesado-corrida-4.png"
+        },
+        {
+          "name": "encapuzado-corrida-1",
+          "x": 0,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            13,
+            52,
+            58
+          ],
+          "file": "sprites/inimigos/encapuzado-corrida-1.png"
+        },
+        {
+          "name": "encapuzado-corrida-2",
+          "x": 64,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            13,
+            14,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/encapuzado-corrida-2.png"
+        },
+        {
+          "name": "encapuzado-corrida-3",
+          "x": 128,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            12,
+            49,
+            58
+          ],
+          "file": "sprites/inimigos/encapuzado-corrida-3.png"
+        },
+        {
+          "name": "encapuzado-corrida-4",
+          "x": 192,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            13,
+            14,
+            50,
+            58
+          ],
+          "file": "sprites/inimigos/encapuzado-corrida-4.png"
+        }
+      ]
+    },
+    "armas": {
+      "file": "armas.png",
+      "frames": [
+        {
+          "name": "pistola",
+          "x": 0,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            21,
+            23,
+            43,
+            41
+          ],
+          "file": "sprites/armas/pistola.png"
+        },
+        {
+          "name": "revolver",
+          "x": 64,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            24,
+            47,
+            39
+          ],
+          "file": "sprites/armas/revolver.png"
+        },
+        {
+          "name": "submetralhadora",
+          "x": 128,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            22,
+            47,
+            42
+          ],
+          "file": "sprites/armas/submetralhadora.png"
+        },
+        {
+          "name": "escopeta",
+          "x": 192,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            23,
+            52,
+            41
+          ],
+          "file": "sprites/armas/escopeta.png"
+        },
+        {
+          "name": "fuzil",
+          "x": 0,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            19,
+            54,
+            44
+          ],
+          "file": "sprites/armas/fuzil.png"
+        },
+        {
+          "name": "escopeta-dupla",
+          "x": 64,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            13,
+            24,
+            51,
+            40
+          ],
+          "file": "sprites/armas/escopeta-dupla.png"
+        },
+        {
+          "name": "minigun",
+          "x": 128,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            9,
+            20,
+            55,
+            43
+          ],
+          "file": "sprites/armas/minigun.png"
+        },
+        {
+          "name": "canhao-plasma",
+          "x": 192,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            21,
+            54,
+            43
+          ],
+          "file": "sprites/armas/canhao-plasma.png"
+        },
+        {
+          "name": "pistola-frenesi",
+          "x": 0,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            21,
+            22,
+            43,
+            41
+          ],
+          "file": "sprites/armas/pistola-frenesi.png"
+        },
+        {
+          "name": "revolver-frenesi",
+          "x": 64,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            24,
+            47,
+            39
+          ],
+          "file": "sprites/armas/revolver-frenesi.png"
+        },
+        {
+          "name": "submetralhadora-frenesi",
+          "x": 128,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            22,
+            47,
+            42
+          ],
+          "file": "sprites/armas/submetralhadora-frenesi.png"
+        },
+        {
+          "name": "escopeta-frenesi",
+          "x": 192,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            23,
+            52,
+            41
+          ],
+          "file": "sprites/armas/escopeta-frenesi.png"
+        },
+        {
+          "name": "fuzil-frenesi",
+          "x": 0,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            19,
+            54,
+            44
+          ],
+          "file": "sprites/armas/fuzil-frenesi.png"
+        },
+        {
+          "name": "escopeta-dupla-frenesi",
+          "x": 64,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            13,
+            24,
+            51,
+            40
+          ],
+          "file": "sprites/armas/escopeta-dupla-frenesi.png"
+        },
+        {
+          "name": "minigun-frenesi",
+          "x": 128,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            9,
+            20,
+            55,
+            43
+          ],
+          "file": "sprites/armas/minigun-frenesi.png"
+        },
+        {
+          "name": "canhao-plasma-frenesi",
+          "x": 192,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            21,
+            54,
+            43
+          ],
+          "file": "sprites/armas/canhao-plasma-frenesi.png"
+        }
+      ]
+    },
+    "efeitos": {
+      "file": "efeitos.png",
+      "frames": [
+        {
+          "name": "disparo-1",
+          "x": 0,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            23,
+            25,
+            40,
+            38
+          ],
+          "file": "sprites/efeitos/disparo-1.png"
+        },
+        {
+          "name": "disparo-2",
+          "x": 64,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            18,
+            20,
+            46,
+            44
+          ],
+          "file": "sprites/efeitos/disparo-2.png"
+        },
+        {
+          "name": "disparo-3",
+          "x": 128,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            11,
+            14,
+            52,
+            50
+          ],
+          "file": "sprites/efeitos/disparo-3.png"
+        },
+        {
+          "name": "disparo-4",
+          "x": 192,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            21,
+            23,
+            42,
+            41
+          ],
+          "file": "sprites/efeitos/disparo-4.png"
+        },
+        {
+          "name": "bala",
+          "x": 0,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            20,
+            29,
+            43,
+            34
+          ],
+          "file": "sprites/efeitos/bala.png"
+        },
+        {
+          "name": "chumbos",
+          "x": 64,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            21,
+            47,
+            43
+          ],
+          "file": "sprites/efeitos/chumbos.png"
+        },
+        {
+          "name": "tracante",
+          "x": 128,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            27,
+            53,
+            36
+          ],
+          "file": "sprites/efeitos/tracante.png"
+        },
+        {
+          "name": "plasma",
+          "x": 192,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            14,
+            24,
+            50,
+            40
+          ],
+          "file": "sprites/efeitos/plasma.png"
+        },
+        {
+          "name": "impacto-1",
+          "x": 0,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            25,
+            23,
+            38,
+            40
+          ],
+          "file": "sprites/efeitos/impacto-1.png"
+        },
+        {
+          "name": "impacto-2",
+          "x": 64,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            19,
+            18,
+            45,
+            45
+          ],
+          "file": "sprites/efeitos/impacto-2.png"
+        },
+        {
+          "name": "impacto-3",
+          "x": 128,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            12,
+            54,
+            51
+          ],
+          "file": "sprites/efeitos/impacto-3.png"
+        },
+        {
+          "name": "impacto-4",
+          "x": 192,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            17,
+            15,
+            47,
+            48
+          ],
+          "file": "sprites/efeitos/impacto-4.png"
+        },
+        {
+          "name": "rastro-dash-1",
+          "x": 0,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            16,
+            26,
+            48,
+            38
+          ],
+          "file": "sprites/efeitos/rastro-dash-1.png"
+        },
+        {
+          "name": "rastro-dash-2",
+          "x": 64,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            9,
+            25,
+            54,
+            39
+          ],
+          "file": "sprites/efeitos/rastro-dash-2.png"
+        },
+        {
+          "name": "rastro-dash-3",
+          "x": 128,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            25,
+            54,
+            39
+          ],
+          "file": "sprites/efeitos/rastro-dash-3.png"
+        },
+        {
+          "name": "rastro-dash-4",
+          "x": 192,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            27,
+            51,
+            36
+          ],
+          "file": "sprites/efeitos/rastro-dash-4.png"
+        }
+      ]
+    },
+    "sangue-itens": {
+      "file": "sangue-itens.png",
+      "frames": [
+        {
+          "name": "mancha-1",
+          "x": 0,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            23,
+            24,
+            41,
+            40
+          ],
+          "file": "sprites/sangue-itens/mancha-1.png"
+        },
+        {
+          "name": "mancha-2",
+          "x": 64,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            15,
+            20,
+            48,
+            44
+          ],
+          "file": "sprites/sangue-itens/mancha-2.png"
+        },
+        {
+          "name": "mancha-3",
+          "x": 128,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            8,
+            13,
+            55,
+            51
+          ],
+          "file": "sprites/sangue-itens/mancha-3.png"
+        },
+        {
+          "name": "mancha-4",
+          "x": 192,
+          "y": 0,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            11,
+            18,
+            52,
+            46
+          ],
+          "file": "sprites/sangue-itens/mancha-4.png"
+        },
+        {
+          "name": "sangue-impacto-1",
+          "x": 0,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            23,
+            23,
+            40,
+            41
+          ],
+          "file": "sprites/sangue-itens/sangue-impacto-1.png"
+        },
+        {
+          "name": "sangue-impacto-2",
+          "x": 64,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            18,
+            18,
+            46,
+            46
+          ],
+          "file": "sprites/sangue-itens/sangue-impacto-2.png"
+        },
+        {
+          "name": "sangue-impacto-3",
+          "x": 128,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            14,
+            52,
+            49
+          ],
+          "file": "sprites/sangue-itens/sangue-impacto-3.png"
+        },
+        {
+          "name": "sangue-impacto-4",
+          "x": 192,
+          "y": 64,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            14,
+            53,
+            49
+          ],
+          "file": "sprites/sangue-itens/sangue-impacto-4.png"
+        },
+        {
+          "name": "corpo-1",
+          "x": 0,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            17,
+            52,
+            46
+          ],
+          "file": "sprites/sangue-itens/corpo-1.png"
+        },
+        {
+          "name": "corpo-2",
+          "x": 64,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            10,
+            22,
+            54,
+            42
+          ],
+          "file": "sprites/sangue-itens/corpo-2.png"
+        },
+        {
+          "name": "corpo-3",
+          "x": 128,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            12,
+            17,
+            52,
+            46
+          ],
+          "file": "sprites/sangue-itens/corpo-3.png"
+        },
+        {
+          "name": "corpo-4",
+          "x": 192,
+          "y": 128,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            16,
+            20,
+            48,
+            43
+          ],
+          "file": "sprites/sangue-itens/corpo-4.png"
+        },
+        {
+          "name": "mira",
+          "x": 0,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            15,
+            15,
+            49,
+            49
+          ],
+          "file": "sprites/sangue-itens/mira.png"
+        },
+        {
+          "name": "vida",
+          "x": 64,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            16,
+            17,
+            48,
+            46
+          ],
+          "file": "sprites/sangue-itens/vida.png"
+        },
+        {
+          "name": "municao",
+          "x": 128,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            19,
+            14,
+            44,
+            50
+          ],
+          "file": "sprites/sangue-itens/municao.png"
+        },
+        {
+          "name": "frenesi",
+          "x": 192,
+          "y": 192,
+          "w": 64,
+          "h": 64,
+          "visibleBounds": [
+            19,
+            14,
+            45,
+            50
+          ],
+          "file": "sprites/sangue-itens/frenesi.png"
+        }
+      ]
+    }
+  }
+}
