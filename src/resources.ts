@@ -2,6 +2,8 @@ import { ImageSource, Loader } from "excalibur";
 
 export const Resources = {
     Jogador: new ImageSource("/assets/combate-v1/jogador.png"),
+    Armas: new ImageSource("/assets/combate-v1/armas.png"),
+    Disparos: new ImageSource("/assets/combate-v1/efeitos.png"),
     DetalhesPiso: new ImageSource("/assets/arena/detalhes-piso.png"),
     ConcretoParede: new ImageSource("/assets/arena/parede-concreto-v2.png"),
     Piso: new ImageSource("/assets/arena/piso.png"),

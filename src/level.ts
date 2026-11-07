@@ -1,5 +1,8 @@
 import { Actor, CollisionType, Color, Scene, Sprite, vec } from "excalibur";
 import { Player } from "./player";
+import { Projetil } from "./projetil";
+import { ArmaChao } from "./arma-chao";
+import { EfeitoDash } from "./efeito-dash";
 import { gerarSalaAleatoria } from "./gerador";
 import { Resources } from "./resources";
 import { desenharParedes } from "./desenho-paredes";
@@ -108,6 +111,7 @@ export class MyLevel extends Scene {
         this.add(this.visualParedes);
         this.add(this.ambiente);
         this.add(this.jogador);
+        this.add(this.jogador.indicador);
         this.gerarSala();
     }
 
@@ -134,6 +138,13 @@ export class MyLevel extends Scene {
     }
 
     private gerarSala(): void {
+        // Os tiros ficam na sala anterior
+        for (const ator of this.actors) {
+            if (ator instanceof Projetil) ator.kill();
+            if (ator instanceof ArmaChao) ator.kill();
+            if (ator instanceof EfeitoDash) ator.kill();
+        }
+
         for (const parede of this.paredesInternas) {
             parede.kill();
         }
@@ -184,8 +195,13 @@ export class MyLevel extends Scene {
             this.marcadoresInimigos.push(marcador);
         }
 
+        for (const posicao of sala.armas) {
+            this.add(new ArmaChao(posicao.tipo, posicao.x, posicao.y));
+        }
+
         this.jogador.pos = vec(78, 300);
-        this.jogador.vel = vec(0, 0);
+        this.jogador.entrarNaSala();
+        this.jogador.indicador.text = "PISTOLA  |  FRENESI 0/3  |  DASH PRONTO";
 
         this.numeroSala++;
 

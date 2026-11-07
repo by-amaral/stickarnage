@@ -254,5 +254,27 @@ export function gerarSalaAleatoria(anterior = "") {
         ) >= 3);
     }
 
-    return { nome, paredes: montarParedes(grade), inimigos, detalhes };
+    const livres = buscarChao(grade).filter(p =>
+        !grade[p.linha][p.coluna].reservada &&
+        p.coluna >= 4 && p.coluna < COLUNAS - 2 &&
+        p.linha >= 1 && p.linha < LINHAS - 1 &&
+        inimigos.every(i => Math.hypot(
+            i.x - (60 + p.coluna * 40), i.y - (60 + p.linha * 40)
+        ) > 80)
+    );
+    const armas = [] as { x: number; y: number; tipo: "submetralhadora" | "escopeta" }[];
+
+    for (const tipo of ["submetralhadora", "escopeta"] as const) {
+        const opcoes = livres.filter(p => p.linha < 6);
+        if (!opcoes.length) break;
+        const p = opcoes[sortear(opcoes.length)];
+        armas.push({ x: 60 + p.coluna * 40, y: 60 + p.linha * 40, tipo });
+        for (let i = livres.length - 1; i >= 0; i--) {
+            if (Math.hypot(livres[i].coluna - p.coluna, livres[i].linha - p.linha) < 3) {
+                livres.splice(i, 1);
+            }
+        }
+    }
+
+    return { nome, paredes: montarParedes(grade), inimigos, detalhes, armas };
 }

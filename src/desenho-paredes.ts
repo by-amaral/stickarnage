@@ -8,7 +8,6 @@ export type RetanguloParede = {
     altura: number;
 };
 
-// Todas as camadas usam as coordenadas da arena
 function criarCamada() {
     const imagem = document.createElement("canvas");
     imagem.width = 800;
