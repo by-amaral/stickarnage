@@ -1,14 +1,18 @@
 import { ImageSource, Loader } from "excalibur";
 
-// It is convenient to put your resources in one place
 export const Resources = {
-  Sword: new ImageSource("./images/sword.png") // Vite public/ directory serves the root images
-} as const; // the 'as const' is a neat typescript trick to get strong typing on your resources. 
-// So when you type Resources.Sword -> ImageSource
+    DetalhesPiso: new ImageSource("/assets/arena/detalhes-piso.png"),
+    ConcretoParede: new ImageSource("/assets/arena/parede-concreto-v2.png"),
+    Piso: new ImageSource("/assets/arena/piso.png"),
+    ParedeHorizontal: new ImageSource("/assets/arena/parede-horizontal.png"),
+    ParedeVertical: new ImageSource("/assets/arena/parede-vertical.png"),
+    Pilar: new ImageSource("/assets/arena/pilar.png"),
+    PortaEntrada: new ImageSource("/assets/arena/porta-entrada.png"),
+    PortaSaida: new ImageSource("/assets/arena/porta-saida.png")
+} as const;
 
-// We build a loader and add all of our resources to the boot loader
-// You can build your own loader by extending DefaultLoader
 export const loader = new Loader();
-for (const res of Object.values(Resources)) {
-  loader.addResource(res);
+
+for (const recurso of Object.values(Resources)) {
+    loader.addResource(recurso);
 }
