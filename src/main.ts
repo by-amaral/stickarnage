@@ -8,6 +8,8 @@ const game = new Engine({
   displayMode: DisplayMode.FitScreen,
   backgroundColor: Color.fromHex("#17191f"),
   pixelArt: true,
+  // Mantém passos curtos para o movimento e as colisões
+  fixedUpdateFps: 60,
   scenes: {
     start: MyLevel
   },
