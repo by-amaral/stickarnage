@@ -1,5 +1,6 @@
 import { Actor, CollisionType, Engine, Ray, Scene, Sprite, Vector } from "excalibur";
 import { Resources } from "./resources";
+import { Inimigo } from "./inimigos";
 
 // Verifica o caminho inteiro até o próximo ponto
 export function temParede(scene: Scene, inicio: Vector, fim: Vector): boolean {
@@ -28,7 +29,8 @@ export class Projetil extends Actor {
     constructor(
         posicao: Vector,
         private readonly direcao: Vector,
-        public readonly dano = 1
+        public readonly dano = 1,
+        public readonly origem: "jogador" | "inimigo" = "jogador"
     ) {
         super({
             name: "Projetil",
@@ -52,7 +54,28 @@ export class Projetil extends Actor {
 
         this.tempo += delta;
         const proximaPosicao = this.pos.add(this.direcao.scale(650 * delta / 1000));
+        if (this.origem === "jogador") {
+            const inimigos = this.scene.actors.filter(
+                actor => actor instanceof Inimigo
+            );
 
+            for (const inimigo of inimigos) {
+                if (proximaPosicao.distance(inimigo.pos) < 25) {
+                    inimigo.receberDano();
+                    this.kill();
+                    return;
+                }
+            }
+        }
+        if (this.origem === "jogador") {
+            const inimigo = this.scene.actors.find(actor => actor instanceof Inimigo);
+
+            if (inimigo && proximaPosicao.distance(inimigo.pos) < 15) {
+                inimigo.receberDano();
+                this.kill();
+                return;
+            }
+        }
         if (temParede(this.scene, this.pos, proximaPosicao) ||
             this.tempo >= 1500 ||
             proximaPosicao.x < 0 || proximaPosicao.x > 800 ||

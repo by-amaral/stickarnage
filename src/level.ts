@@ -8,13 +8,14 @@ import { Resources } from "./resources";
 import { desenharParedes } from "./desenho-paredes";
 import type { RetanguloParede } from "./desenho-paredes";
 import { desenharAmbiente } from "./ambiente";
+import { Inimigo } from "./inimigos";
 
 export class MyLevel extends Scene {
     private jogador = new Player();
     private paredesInternas: Actor[] = [];
     private numeroSala = 0;
     private ultimaFamilia = "";
-    private marcadoresInimigos: Actor[] = [];
+    private inimigos: Inimigo[] = [];
     private ambiente = new Actor({
         pos: vec(400, 300), collisionType: CollisionType.PreventCollision, z: 1.5
     });
@@ -149,12 +150,12 @@ export class MyLevel extends Scene {
             parede.kill();
         }
 
-        for (const marcador of this.marcadoresInimigos) {
-            marcador.kill();
+        for (const inimigo of this.inimigos) {
+            inimigo.kill();
         }
 
         this.paredesInternas = [];
-        this.marcadoresInimigos = [];
+        this.inimigos = [];
 
         const sala = gerarSalaAleatoria(this.ultimaFamilia);
         this.ultimaFamilia = sala.nome;
@@ -183,16 +184,10 @@ export class MyLevel extends Scene {
         );
 
         for (const posicao of sala.inimigos) {
-            const marcador = new Actor({
-                pos: vec(posicao.x, posicao.y),
-                radius: 12,
-                color: Color.Orange,
-                collisionType: CollisionType.PreventCollision,
-                z: 2
-            });
+            const inimigo = new Inimigo(0, posicao.x, posicao.y);
 
-            this.add(marcador);
-            this.marcadoresInimigos.push(marcador);
+            this.add(inimigo);
+            this.inimigos.push(inimigo);
         }
 
         for (const posicao of sala.armas) {

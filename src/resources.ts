@@ -8,7 +8,7 @@ export const Resources = {
     ConcretoParede: new ImageSource("/assets/arena/parede-concreto-v2.png"),
     Piso: new ImageSource("/assets/arena/piso.png"),
     ParedeHorizontal: new ImageSource("/assets/arena/parede-horizontal.png"),
-    ParedeVertical: new ImageSource("/assets/arena/parede-vertical.png"),
+    ParedeVertical: new ImageSource("/assets/arena/parede-vertical.png"),    
     Pilar: new ImageSource("/assets/arena/pilar.png"),
     PortaEntrada: new ImageSource("/assets/arena/porta-entrada.png"),
     PortaSaida: new ImageSource("/assets/arena/porta-saida.png"),
@@ -19,7 +19,8 @@ export const Resources = {
     LogoMenu: new ImageSource("/assets/menus-v1/logo-original.png"),
     FundoCarregamento: new ImageSource("/assets/menus-v1/carregamento.png"),
     BarraCarregamento: new ImageSource("/images/Barra.png"),
-    Preenchimento: new ImageSource("/images/Preenchimento.png")
+    Preenchimento: new ImageSource("/images/Preenchimento.png"),
+    Inimigos: new ImageSource("/assets/combate-v1/inimigos.png")
 } as const;
 
 export const loader = new Loader();

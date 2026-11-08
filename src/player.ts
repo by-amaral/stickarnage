@@ -25,6 +25,7 @@ const armas: Record<TipoArma, ConfiguracaoArma> = {
 };
 
 export class Player extends Actor {
+    private vida = 10;
     private readonly velocidade = 240;
     private readonly frenesi = new Frenesi();
     private armaEquipada: TipoArma = "pistola";
@@ -41,6 +42,7 @@ export class Player extends Actor {
         pos: vec(11, -14),
         // Pivota no cabo da pistola
         anchor: vec(0.41, 0.56),
+        scale: vec(0.8, 0.8),
         collisionType: CollisionType.PreventCollision,
         z: 0.1
     });
@@ -66,6 +68,7 @@ export class Player extends Actor {
             name: "Player",
             pos: vec(100, 300),
             radius: 12,
+            scale: vec(1.25, 1.25),
             collisionType: CollisionType.Active,
             z: 2
         });
@@ -255,7 +258,7 @@ export class Player extends Actor {
                 ? (Math.random() - 0.5) * config.dispersao
                 : -config.dispersao / 2 + i * config.dispersao / (config.projeteis - 1);
             const direcao = this.direcaoMira.rotate(espalhamento);
-            this.scene.add(new Projetil(cano, direcao, config.dano * (1 + nivel * 0.15)));
+            this.scene.add(new Projetil(cano, direcao, config.dano * (1 + nivel * 0.15), "jogador"));
         }
     }
 
@@ -274,5 +277,11 @@ export class Player extends Actor {
         this.tempoAnimacao = 0;
         this.atualizarAnimacao(true);
         this.sombra.pos = this.pos.add(vec(0, 9));
+    }
+    receberDano(): void {
+        this.vida--;
+            if (this.vida <= 0) {
+                this.kill();
+            }
     }
 }

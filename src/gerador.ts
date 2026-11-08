@@ -246,14 +246,29 @@ export function gerarSalaAleatoria(anterior = "") {
         ) > 60)
     );
     const detalhes: { x: number; y: number; tipo: number }[] = [];
-    for (let tipo = 0; tipo < 4 && locais.length; tipo++) {
+    for (let i = 0; i < 4 && locais.length; i++) {
         const p = locais[sortear(locais.length)];
-        detalhes.push({ x: 60 + p.coluna * 40, y: 60 + p.linha * 40, tipo });
+        detalhes.push({
+            x: 60 + p.coluna * 40,
+            y: 60 + p.linha * 40,
+            tipo: 3
+        });
         locais = locais.filter(outro => Math.hypot(
             outro.coluna - p.coluna, outro.linha - p.linha
         ) >= 3);
     }
-
+    const tampas: { x: number; y: number; tipo: number }[] = [];
+    for (let i = 0; i < 3 && locais.length; i++) {
+        const p = locais[sortear(locais.length)];
+        tampas.push({
+            x: 60 + p.coluna * 40,
+            y: 60 + p.linha * 40,
+            tipo: sortear(2)
+    });
+    locais = locais.filter(outro => Math.hypot(
+        outro.coluna - p.coluna, outro.linha - p.linha
+    ) >= 3);
+}
     const livres = buscarChao(grade).filter(p =>
         !grade[p.linha][p.coluna].reservada &&
         p.coluna >= 4 && p.coluna < COLUNAS - 2 &&
@@ -276,5 +291,5 @@ export function gerarSalaAleatoria(anterior = "") {
         }
     }
 
-    return { nome, paredes: montarParedes(grade), inimigos, detalhes, armas };
+    return { nome, paredes: montarParedes(grade), inimigos, detalhes:[...detalhes, ...tampas], armas };
 }
