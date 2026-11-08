@@ -1,6 +1,8 @@
 import { Color, DisplayMode, Engine, FadeInOut } from "excalibur";
 import { loader } from "./resources";
 import { MyLevel } from "./level";
+import { MenuInicial } from "./menu-inicial";
+import { TelaCarregamento } from "./carregamento";
 
 const game = new Engine({
   width: 800, 
@@ -12,7 +14,8 @@ const game = new Engine({
   // Mantém passos curtos para o movimento e as colisões
   fixedUpdateFps: 60,
   scenes: {
-    start: MyLevel
+    menu: MenuInicial, carregamento: TelaCarregamento, start: MyLevel
+  
   },
 
   
@@ -23,7 +26,7 @@ const game = new Engine({
   // fixedUpdateTimestep: 16 // Turn on fixed update timestep when consistent physic simulation is important
 });
 
-game.start('start', { // name of the start scene 'start'
+game.start('menu', { // name of the start scene 'start'
   loader, // Optional loader (but needed for loading images/sounds)
   inTransition: new FadeInOut({ // Optional in transition
     duration: 1000,
