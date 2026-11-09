@@ -290,6 +290,5 @@ export function gerarSalaAleatoria(anterior = "") {
             }
         }
     }
-
-    return { nome, paredes: montarParedes(grade), inimigos, detalhes:[...detalhes, ...tampas], armas };
+    return { nome, grade, paredes: montarParedes(grade), inimigos, detalhes:[...detalhes, ...tampas], armas };
 }

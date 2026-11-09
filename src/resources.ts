@@ -20,7 +20,9 @@ export const Resources = {
     FundoCarregamento: new ImageSource("/assets/menus-v1/carregamento.png"),
     BarraCarregamento: new ImageSource("/images/Barra.png"),
     Preenchimento: new ImageSource("/images/Preenchimento.png"),
-    Inimigos: new ImageSource("/assets/combate-v1/inimigos.png")
+    Inimigos: new ImageSource("/assets/combate-v1/inimigos.png"),
+    PistolaInimigo: new ImageSource("/assets/combate-v1/sprites/armas/pistola.png"),
+    Mancha: new ImageSource("/assets/combate-v1/sprites/sangue-itens/mancha-4.png"),
 } as const;
 
 export const loader = new Loader();

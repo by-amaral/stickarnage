@@ -25,7 +25,7 @@ const armas: Record<TipoArma, ConfiguracaoArma> = {
 };
 
 export class Player extends Actor {
-    private vida = 10;
+    private vida = 30;
     private readonly velocidade = 240;
     private readonly frenesi = new Frenesi();
     private armaEquipada: TipoArma = "pistola";

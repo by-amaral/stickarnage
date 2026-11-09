@@ -184,8 +184,8 @@ export class MyLevel extends Scene {
         );
 
         for (const posicao of sala.inimigos) {
-            const inimigo = new Inimigo(0, posicao.x, posicao.y);
-
+            const vidaInimigo = 2 + Math.floor((this.numeroSala - 1) / 8);
+            const inimigo = new Inimigo(0, posicao.x, posicao.y, vidaInimigo, sala.grade);
             this.add(inimigo);
             this.inimigos.push(inimigo);
         }
@@ -214,9 +214,17 @@ export class MyLevel extends Scene {
             posicao.x >= 770 &&
             posicao.y > 250 &&
             posicao.y < 350;
+        const existemInimigos = this.inimigos.some(
+            inimigo => !inimigo.isKilled()
+        );
 
         if (atravessouSaida) {
-            this.gerarSala();
+            if (existemInimigos) {
+                this.jogador.pos.x = 750;
+                this.jogador.vel.x = 0;
+            } else {
+                this.gerarSala();
+            }
         }
     }
 }
