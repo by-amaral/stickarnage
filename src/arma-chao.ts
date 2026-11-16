@@ -1,12 +1,18 @@
 import { Actor, Canvas, CollisionType, Color, Engine, Sprite, vec } from "excalibur";
 import { Resources } from "./resources";
 
-export type TipoArma = "pistola" | "submetralhadora" | "escopeta";
+import { type TipoArma } from "./armamento";
+export type { TipoArma } from "./armamento";
 
 const quadros: Record<TipoArma, { x: number; y: number; largura: number; altura: number; destino: number }> = {
     pistola: { x: 21, y: 23, largura: 22, altura: 18, destino: 25 },
     submetralhadora: { x: 145, y: 22, largura: 30, altura: 20, destino: 32 },
-    escopeta: { x: 204, y: 23, largura: 40, altura: 18, destino: 40 }
+    escopeta: { x: 204, y: 23, largura: 40, altura: 18, destino: 40 },
+    revolver: { x: 81, y: 24, largura: 30, altura: 15, destino: 32 },
+    fuzil: { x: 10, y: 83, largura: 44, altura: 25, destino: 44 },
+    "escopeta-dupla": { x: 77, y: 88, largura: 38, altura: 16, destino: 42 },
+    minigun: { x: 137, y: 84, largura: 46, altura: 23, destino: 46 },
+    "canhao-plasma": { x: 202, y: 85, largura: 44, altura: 22, destino: 46 }
 };
 
 export class ArmaChao extends Actor {

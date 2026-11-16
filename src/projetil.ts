@@ -2,6 +2,8 @@ import { Actor, CollisionType, Engine, Ray, Scene, Sprite, Vector } from "excali
 import { Resources } from "./resources";
 import { Inimigo } from "./inimigos";
 import { Player } from "./player";
+import { impactoParede } from "./efeitos-visuais";
+import type { Disparo } from "./progresso";
 
 // Verifica o caminho inteiro até o próximo ponto
 export function temParede(scene: Scene, inicio: Vector, fim: Vector): boolean {
@@ -31,7 +33,9 @@ export class Projetil extends Actor {
         posicao: Vector,
         private readonly direcao: Vector,
         public readonly dano = 1,
-        public readonly origem: "jogador" | "inimigo" = "jogador"
+        public readonly origem: "jogador" | "inimigo" = "jogador",
+        private readonly plasma = false,
+        private readonly disparo?: Disparo
     ) {
         super({
             name: "Projetil",
@@ -43,6 +47,10 @@ export class Projetil extends Actor {
     }
 
     override onInitialize(): void {
+        if (this.plasma) {
+            this.graphics.use(new Sprite({ image: Resources.Plasma, destSize: { width: 55, height: 55 } }));
+            return;
+        }
         this.graphics.use(new Sprite({
             image: Resources.Disparos,
             sourceView: { x: 20, y: 93, width: 23, height: 5 },
@@ -55,14 +63,31 @@ export class Projetil extends Actor {
 
         this.tempo += delta;
         const proximaPosicao = this.pos.add(this.direcao.scale(650 * delta / 1000));
+        if (temParede(this.scene, this.pos, proximaPosicao)) {
+            impactoParede(this.scene, proximaPosicao);
+            this.kill();
+            return;
+        }
+        if (this.tempo >= 1500 ||
+            proximaPosicao.x < 0 || proximaPosicao.x > 800 ||
+            proximaPosicao.y < 0 || proximaPosicao.y > 600) {
+            this.kill();
+            return;
+        }
         if (this.origem === "jogador") {
             const inimigos = this.scene.actors.filter(
-                actor => actor instanceof Inimigo
+                (actor): actor is Inimigo => actor instanceof Inimigo && !actor.isKilled()
             );
 
             for (const inimigo of inimigos) {
                 if (proximaPosicao.distance(inimigo.pos) < 25) {
-                    inimigo.receberDano();
+                    inimigo.receberDano(this.dano, this.direcao, this.disparo);
+                    if (this.plasma) {
+                        impactoParede(this.scene, inimigo.pos);
+                        for (const outro of inimigos) {
+                            if (outro !== inimigo && !outro.isKilled() && outro.pos.distance(inimigo.pos) < 75 && !temParede(this.scene, inimigo.pos, outro.pos)) outro.receberDano(this.dano * .6, this.direcao, this.disparo);
+                        }
+                    }
                     this.kill();
                     return;
                 }
@@ -80,24 +105,6 @@ export class Projetil extends Actor {
                 return;
             }
         }
-        if (this.origem === "jogador") {
-            const inimigo = this.scene.actors.find(actor => actor instanceof Inimigo);
-
-            if (inimigo && proximaPosicao.distance(inimigo.pos) < 15) {
-                inimigo.receberDano();
-                this.kill();
-                return;
-            }
-        }
-        if (temParede(this.scene, this.pos, proximaPosicao) ||
-            this.tempo >= 1500 ||
-            proximaPosicao.x < 0 || proximaPosicao.x > 800 ||
-            proximaPosicao.y < 0 || proximaPosicao.y > 600) {
-            this.kill();
-            return;
-        }
-        
-
         this.pos = proximaPosicao;
     }
 }

@@ -1,3 +1,4 @@
+import { armasNormais, type TipoArma } from "./armamento";
 export const TAMANHO_CELULA = 40;
 export const COLUNAS = 18;
 export const LINHAS = 13;
@@ -277,9 +278,10 @@ export function gerarSalaAleatoria(anterior = "") {
             i.x - (60 + p.coluna * 40), i.y - (60 + p.linha * 40)
         ) > 80)
     );
-    const armas = [] as { x: number; y: number; tipo: "submetralhadora" | "escopeta" }[];
+    const armas = [] as { x: number; y: number; tipo: TipoArma }[];
 
-    for (const tipo of ["submetralhadora", "escopeta"] as const) {
+    const sorteadas = armasNormais.filter(tipo => tipo !== "pistola").sort(() => Math.random() - .5).slice(0, 3);
+    for (const tipo of sorteadas) {
         const opcoes = livres.filter(p => p.linha < 6);
         if (!opcoes.length) break;
         const p = opcoes[sortear(opcoes.length)];

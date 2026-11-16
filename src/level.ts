@@ -1,4 +1,4 @@
-import { Actor, CollisionType, Color, Scene, Sprite, vec } from "excalibur";
+import { Actor, CollisionType, Color, Engine, Scene, Sprite, vec } from "excalibur";
 import { Player } from "./player";
 import { Projetil } from "./projetil";
 import { ArmaChao } from "./arma-chao";
@@ -9,8 +9,17 @@ import { desenharParedes } from "./desenho-paredes";
 import type { RetanguloParede } from "./desenho-paredes";
 import { desenharAmbiente } from "./ambiente";
 import { Inimigo } from "./inimigos";
+import { audioJogo } from "./audio";
+import { progresso } from "./progresso";
+import { perfilInimigo } from "./dificuldade";
+import { prepararSangue, limparSangue } from "./sangue";
+
+export type EstadoJogo = { vida: number; sala: number; pontos: number; arma: string; armaDisponivel?: string; frenesi: number; dash: boolean; restantes: number; balas: number; capacidade: number; recarregando: boolean; progressoRecarga: number; especial: string };
 
 export class MyLevel extends Scene {
+    onEstado?: (estado: EstadoJogo) => void;
+    onFim?: (estado: EstadoJogo) => void;
+    private fimAvisado = false;
     private jogador = new Player();
     private paredesInternas: Actor[] = [];
     private numeroSala = 0;
@@ -112,8 +121,14 @@ export class MyLevel extends Scene {
         this.add(this.visualParedes);
         this.add(this.ambiente);
         this.add(this.jogador);
-        this.add(this.jogador.indicador);
+        prepararSangue(this);
         this.gerarSala();
+    }
+
+    override onDeactivate(): void {
+        // Cada partida usa uma cena nova. Encerrar o jogador também libera
+        // os ouvintes de mouse e de janela quando a partida é abandonada.
+        if (!this.jogador.isKilled()) this.jogador.kill();
     }
 
     private criarParede(
@@ -139,11 +154,15 @@ export class MyLevel extends Scene {
     }
 
     private gerarSala(): void {
+        limparSangue(this);
         // Os tiros ficam na sala anterior
         for (const ator of this.actors) {
             if (ator instanceof Projetil) ator.kill();
             if (ator instanceof ArmaChao) ator.kill();
             if (ator instanceof EfeitoDash) ator.kill();
+            if (ator.name === "Marca de sangue") ator.kill();
+            if (ator.name === "Corpo") ator.kill();
+            if (ator.name === "Efeito de combate") ator.kill();
         }
 
         for (const parede of this.paredesInternas) {
@@ -183,9 +202,9 @@ export class MyLevel extends Scene {
             )
         );
 
-        for (const posicao of sala.inimigos) {
-            const vidaInimigo = 2 + Math.floor((this.numeroSala - 1) / 8);
-            const inimigo = new Inimigo(0, posicao.x, posicao.y, vidaInimigo, sala.grade);
+        for (const [indice, posicao] of sala.inimigos.entries()) {
+            const vidaInimigo = 2 + Math.floor(this.numeroSala / 8);
+            const inimigo = new Inimigo(0, posicao.x, posicao.y, vidaInimigo, sala.grade, perfilInimigo(this.numeroSala + 1, indice));
             this.add(inimigo);
             this.inimigos.push(inimigo);
         }
@@ -196,18 +215,21 @@ export class MyLevel extends Scene {
 
         this.jogador.pos = vec(78, 300);
         this.jogador.entrarNaSala();
-        this.jogador.indicador.text = "PISTOLA  |  FRENESI 0/3  |  DASH PRONTO";
-
         this.numeroSala++;
-
-        console.log(
-            `Sala ${this.numeroSala}:`,
-            `${sala.nome},`,
-            `${sala.inimigos.length} posições de inimigos`
-        );
+        progresso.entrarSala(this.numeroSala, this.jogador.vidaAtual);
+        if (this.numeroSala > 1) audioJogo.tocar("porta");
     }
 
-    override onPostUpdate(): void {
+    override onPostUpdate(_engine: Engine, delta: number): void {
+        const estado = this.estadoAtual;
+        progresso.atualizar(delta, estado.vida, estado.frenesi);
+        if (estado.vida > 0 && estado.restantes === 0) progresso.limparSala();
+        this.onEstado?.(estado);
+        if (estado.vida <= 0 && !this.fimAvisado) {
+            this.fimAvisado = true;
+            this.onFim?.(estado);
+            return;
+        }
         const posicao = this.jogador.pos;
 
         const atravessouSaida =
@@ -226,5 +248,23 @@ export class MyLevel extends Scene {
                 this.gerarSala();
             }
         }
+    }
+
+    get estadoAtual(): EstadoJogo {
+        return {
+            vida: this.jogador.vidaAtual,
+            sala: this.numeroSala,
+            pontos: this.jogador.pontos,
+            arma: this.jogador.armaAtual,
+            balas: this.jogador.balas,
+            capacidade: this.jogador.capacidade,
+            recarregando: this.jogador.recarregando,
+            progressoRecarga: this.jogador.progressoRecarga,
+            especial: this.jogador.especial,
+            armaDisponivel: this.jogador.armaDisponivel,
+            frenesi: this.jogador.nivelFrenesi,
+            dash: this.jogador.dashPronto,
+            restantes: this.inimigos.filter(inimigo => !inimigo.isKilled()).length
+        };
     }
 }

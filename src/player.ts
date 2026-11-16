@@ -1,6 +1,6 @@
 import {
-    Actor, CollisionType, Color, Engine, Font, Keys,
-    Label, PointerButton, Sprite, TextAlign, Vector, vec
+    Actor, CollisionType, Color, Engine, Keys,
+    PointerButton, Sprite, Vector, vec
 } from "excalibur";
 import { ArmaChao, TipoArma } from "./arma-chao";
 import { Frenesi } from "./frenesi";
@@ -8,33 +8,28 @@ import { Resources } from "./resources";
 import { Projetil, temParede } from "./projetil";
 import { distanciaLivre } from "./projetil";
 import { EfeitoDash } from "./efeito-dash";
-
-type ConfiguracaoArma = {
-    quadro: number;
-    intervalo: number;
-    automatico: boolean;
-    projeteis: number;
-    dispersao: number;
-    dano: number;
-};
-
-const armas: Record<TipoArma, ConfiguracaoArma> = {
-    pistola: { quadro: 0, intervalo: 180, automatico: false, projeteis: 1, dispersao: 0, dano: 2 },
-    submetralhadora: { quadro: 2, intervalo: 95, automatico: true, projeteis: 1, dispersao: 0.04, dano: 1 },
-    escopeta: { quadro: 3, intervalo: 650, automatico: false, projeteis: 5, dispersao: 0.3, dano: 1 }
-};
+import { audioJogo } from "./audio";
+import { Vitalidade } from "./vitalidade";
+import { Armamento, armas } from "./armamento";
+import { progresso, type Disparo } from "./progresso";
+import { flashTiro, RastroMovimento, sangue } from "./efeitos-visuais";
 
 export class Player extends Actor {
-    private vida = 30;
+    private readonly vitalidade = new Vitalidade();
+    private get vida(): number { return this.vitalidade.vida; }
+    private get invulnerabilidadeDano(): number { return this.vitalidade.protecao; }
+    private armaProxima: TipoArma | undefined;
     private readonly velocidade = 240;
     private readonly frenesi = new Frenesi();
-    private armaEquipada: TipoArma = "pistola";
+    private readonly armamento = new Armamento();
+    private get armaEquipada(): TipoArma { return this.armamento.tipo; }
     private intervaloTiro = 0;
     private direcaoMira = vec(1, 0);
     private segurandoTiro = false;
     private dashRestante = 0;
     private dashRecarga = 0;
     private tempoAnimacao = 0;
+    private tempoRastro = 0;
     private quadroAnimacao = -1;
     private correndo = false;
     private sprites = new Map<string, Sprite>();
@@ -56,13 +51,6 @@ export class Player extends Actor {
         collisionType: CollisionType.PreventCollision,
         z: 1.9
     });
-    readonly indicador = new Label({
-        pos: vec(400, 15),
-        color: Color.White,
-        font: new Font({ size: 13, family: "monospace", bold: true, textAlign: TextAlign.Center }),
-        z: 8
-    });
-
     constructor() {
         super({
             name: "Player",
@@ -72,6 +60,7 @@ export class Player extends Actor {
             collisionType: CollisionType.Active,
             z: 2
         });
+        this.armamento.onRecarga = (tipo, concluida) => audioJogo.recarregar(tipo, concluida);
     }
 
     override onInitialize(engine: Engine): void {
@@ -82,11 +71,11 @@ export class Player extends Actor {
         this.scene?.add(this.sombra);
         this.addChild(this.arma);
         this.atualizarArma();
-        engine.canvas.style.cursor = "crosshair";
+        engine.canvas.style.cursor = "none";
 
         const pointers = engine.input.pointers.primary;
         const down = pointers.on("down", evento => {
-            if (evento.button !== PointerButton.Left || engine.currentScene !== this.scene) return;
+            if (evento.button !== PointerButton.Left || engine.currentScene !== this.scene || engine.timescale === 0) return;
             this.segurandoTiro = true;
             this.mirar(evento.worldPos);
             this.atirar();
@@ -105,12 +94,16 @@ export class Player extends Actor {
     override onPreUpdate(engine: Engine, delta: number): void {
         this.intervaloTiro = Math.max(0, this.intervaloTiro - delta);
         this.dashRecarga = Math.max(0, this.dashRecarga - delta);
+        this.vitalidade.atualizar(delta);
         this.frenesi.atualizar(delta);
+        this.armamento.atualizar(delta);
 
         const mouse = engine.input.pointers.primary.lastWorldPos;
         if (mouse) this.mirar(mouse);
 
         const teclado = engine.input.keyboard;
+        if (teclado.wasPressed(Keys.R)) this.armamento.recarregar();
+        if (teclado.wasPressed(Keys.Q) && this.armamento.ativarEspecial()) audioJogo.tocar("frenesi");
         let x = 0;
         let y = 0;
         if (teclado.isHeld(Keys.W) || teclado.isHeld(Keys.Up)) y -= 1;
@@ -125,9 +118,10 @@ export class Player extends Actor {
         if (teclado.wasPressed(Keys.Space)) this.iniciarDash(movimento);
 
         this.dashRestante = Math.max(0, this.dashRestante - delta);
-        this.vel = movimento.scale(this.velocidade);
+        this.vel = movimento.scale(this.velocidade * (1 + this.frenesi.nivel * 0.07));
 
         const coletavel = this.maisPerto();
+        this.armaProxima = coletavel?.tipo;
         if (coletavel && teclado.wasPressed(Keys.E)) this.trocarArma(coletavel);
 
         const config = armas[this.armaEquipada];
@@ -135,16 +129,16 @@ export class Player extends Actor {
 
         this.correndo = movimento.magnitude > 0 && this.dashRestante === 0;
         this.tempoAnimacao += delta;
+        this.tempoRastro -= delta;
+        if (movimento.magnitude > 0 && this.tempoRastro <= 0 && this.scene) {
+            this.scene.add(new RastroMovimento(this.pos, this.graphics.flipHorizontal, this.frenesi.nivel));
+            this.tempoRastro = this.frenesi.nivel > 0 ? 55 : 130;
+        }
         this.atualizarAnimacao(false);
         this.atualizarArma();
         this.sombra.pos = this.pos.add(vec(0, 9));
+        this.graphics.opacity = this.invulnerabilidadeDano > 0 && Math.floor(this.invulnerabilidadeDano / 90) % 2 ? 0.45 : 1;
 
-        const nivel = this.frenesi.nivel;
-        const texto = `${this.armaEquipada.toUpperCase()}  |  FRENESI ${nivel}/3  |  DASH ${this.dashRecarga === 0 ? "PRONTO" : "..."}${this.invulneravel ? "  INVULNERÁVEL" : ""}${coletavel ? `  |  E: PEGAR ${coletavel.tipo.toUpperCase()}` : ""}`;
-        if (this.indicador.text !== texto) this.indicador.text = texto;
-
-        // F8 simula uma eliminação durante o desenvolvimento
-        if (import.meta.env.DEV && teclado.wasPressed(Keys.F8)) this.registrarEliminacao();
     }
 
     private prepararSprites(): void {
@@ -166,6 +160,7 @@ export class Player extends Actor {
     }
 
     private atualizarAnimacao(forcar: boolean): void {
+        if (!this.sprites.size) return;
         const estado = this.dashRestante > 0 ? "dash" : this.correndo ? "corrida" : "parado";
         const quadro = estado === "parado" ? 0 : Math.floor(this.tempoAnimacao / (estado === "dash" ? 45 : 100)) % 4;
         if (forcar || quadro !== this.quadroAnimacao || estado !== this.estadoAnimacao) {
@@ -184,17 +179,19 @@ export class Player extends Actor {
 
         const origem = this.pos.clone();
         const destino = origem.add(direcao.scale(distancia));
-        this.scene.add(new EfeitoDash(origem, direcao, distancia, true));
+        for (let i = 0; i < 4; i++) this.scene.add(new EfeitoDash(origem.add(direcao.scale(distancia * i / 4)), direcao, distancia, true));
         this.scene.add(new EfeitoDash(origem.add(destino).scale(0.5), direcao, distancia));
         this.pos = destino;
         this.sombra.pos = this.pos.add(vec(0, 9));
         this.dashRestante = Math.max(75, 180 - this.frenesi.nivel * 35);
         this.dashRecarga = Math.max(350, 800 - this.frenesi.nivel * 120);
         this.tempoAnimacao = 0;
+        audioJogo.tocar("dash");
+        this.scene.camera.shake(3, 3, 120);
     }
 
     get invulneravel(): boolean {
-        return this.dashRestante > 0;
+        return this.dashRestante > 0 || this.invulnerabilidadeDano > 0;
     }
 
     private mirar(alvo: Vector): void {
@@ -233,18 +230,20 @@ export class Player extends Actor {
     }
 
     private trocarArma(coletada: ArmaChao): void {
-        if (!this.scene) return;
+        if (!this.scene || this.armamento.especial) return;
         coletada.kill();
         if (this.armaEquipada !== coletada.tipo) {
             this.scene.add(new ArmaChao(this.armaEquipada, coletada.pos.x, coletada.pos.y));
         }
-        this.armaEquipada = coletada.tipo;
+        this.armamento.trocar(coletada.tipo);
         this.intervaloTiro = 0;
         this.atualizarArma();
+        audioJogo.tocar("coleta");
     }
 
     private atirar(): void {
-        if (!this.scene || this.intervaloTiro > 0) return;
+        if (!this.scene || this.intervaloTiro > 0 || this.armamento.recarregando) return;
+        if (!this.armamento.quantidade) { this.armamento.recarregar(); return; }
         const config = armas[this.armaEquipada];
         const nivel = this.frenesi.nivel;
         this.intervaloTiro = config.intervalo / (1 + nivel * 0.2);
@@ -252,23 +251,37 @@ export class Player extends Actor {
         const cano = origem.add(this.direcaoMira.scale(this.armaEquipada === "pistola" ? 18 : 22));
 
         if (temParede(this.scene, this.pos, origem) || temParede(this.scene, origem, cano)) return;
+        if (!this.armamento.consumir()) return;
+        progresso.usarArma(this.armaEquipada);
+        const disparo: Disparo = { arma: this.armaEquipada, mortes: 0 };
+        audioJogo.tocar(config.impacto >= 3 ? "escopeta" : "tiro");
+        flashTiro(this.scene, cano, this.direcaoMira.toAngle(), config.impacto);
+        this.scene.camera.shake(config.impacto, config.impacto * .65, 55 + config.impacto * 12);
 
         for (let i = 0; i < config.projeteis; i++) {
             const espalhamento = config.projeteis === 1
                 ? (Math.random() - 0.5) * config.dispersao
                 : -config.dispersao / 2 + i * config.dispersao / (config.projeteis - 1);
             const direcao = this.direcaoMira.rotate(espalhamento);
-            this.scene.add(new Projetil(cano, direcao, config.dano * (1 + nivel * 0.15), "jogador"));
+            this.scene.add(new Projetil(cano, direcao, config.dano * (1 + nivel * 0.15), "jogador", this.armaEquipada === "canhao-plasma", disparo));
         }
+        this.armamento.concluirDisparo();
     }
 
     // Chame quando um inimigo for eliminado
     registrarEliminacao(): void {
+        this.armamento.registrarEliminacao();
+        if (this.vitalidade.registrarEliminacao()) {
+            progresso.curou();
+            audioJogo.tocar("coleta");
+        }
         this.frenesi.registrarEliminacao();
         this.atualizarArma();
+        audioJogo.tocar("eliminacao");
     }
 
     entrarNaSala(): void {
+        this.vitalidade.entrarNaSala();
         this.dashRestante = 0;
         this.dashRecarga = 0;
         this.segurandoTiro = false;
@@ -278,10 +291,27 @@ export class Player extends Actor {
         this.atualizarAnimacao(true);
         this.sombra.pos = this.pos.add(vec(0, 9));
     }
+    get vidaAtual(): number { return this.vida; }
+    get pontos(): number { return this.vitalidade.eliminacoes * 100; }
+    get armaAtual(): TipoArma { return this.armaEquipada; }
+    get balas(): number { return this.armamento.quantidade; }
+    get capacidade(): number { return armas[this.armaEquipada].capacidade; }
+    get recarregando(): boolean { return this.armamento.recarregando > 0; }
+    get progressoRecarga(): number { return this.recarregando ? 1 - this.armamento.recarregando / armas[this.armaEquipada].recarga : 1; }
+    get especial(): string { return this.armamento.especial ? "ESPECIAL ATIVO" : this.armamento.carga === 8 ? "Q · ESPECIAL PRONTO" : `ESPECIAL ${this.armamento.carga}/8`; }
+    get armaDisponivel(): TipoArma | undefined { return this.armaProxima; }
+    get nivelFrenesi(): number { return this.frenesi.nivel; }
+    get dashPronto(): boolean { return this.dashRecarga === 0; }
+
     receberDano(): void {
-        this.vida--;
-            if (this.vida <= 0) {
-                this.kill();
-            }
+        if (this.invulneravel || this.isKilled()) return;
+        if (!this.vitalidade.receberDano()) return;
+        progresso.dano();
+        if (this.scene) {
+            sangue(this.scene, this.pos, this.direcaoMira.scale(-1), this.vida <= 0, false);
+            this.scene.camera.shake(this.vida <= 0 ? 12 : 8, this.vida <= 0 ? 10 : 7, this.vida <= 0 ? 300 : 190);
+        }
+        audioJogo.tocar(this.vida <= 0 ? "morte" : "dano");
+        if (this.vida <= 0) this.kill();
     }
 }

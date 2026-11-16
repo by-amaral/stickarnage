@@ -1,0 +1,60 @@
+<!doctype html><html><body style="margin:0;background:#111"><script type="module">
+import { Engine, Scene, vec } from "excalibur";
+import { loader } from "../../src/resources.ts";
+import { sangue } from "../../src/efeitos-visuais.ts";
+import { prepararSangue, limparSangue } from "../../src/sangue.ts";
+import { MyLevel } from "../../src/level.ts";
+import { Player } from "../../src/player.ts";
+import { Projetil } from "../../src/projetil.ts";
+import { Inimigo } from "../../src/inimigos.ts";
+const scene = new Scene();
+const engine = new Engine({ width: 800, height: 600, suppressPlayButton: true, fixedUpdateFps: 60, scenes: { teste: scene } });
+await engine.start("teste", { loader });
+prepararSangue(scene);
+let atualizacoes = 0;
+scene.on("postupdate", () => atualizacoes++);
+window.limparSangue = () => limparSangue(scene);
+window.emitirSangue = () => sangue(scene, vec(400, 300), vec(1, 0), true, false);
+window.verificarReinicio = async () => {
+  const resultados = [];
+  for (let i = 0; i < 3; i++) {
+    const nivel = new MyLevel();
+    engine.addScene("partida", nivel);
+    await engine.goToScene("partida");
+    const jogador = nivel.actors.find(a => a instanceof Player);
+    let encerramentos = 0;
+    jogador.on("kill", () => encerramentos++);
+    await engine.goToScene("teste");
+    resultados.push({ morto: jogador.isKilled(), encerramentos });
+    engine.removeScene("partida");
+  }
+  return resultados;
+};
+window.verificarTiros = () => {
+  const morto = new Inimigo(0, 400, 300, 1, []);
+  const vivo = new Inimigo(0, 400, 300, 1, []);
+  scene.add(morto); scene.add(vivo);
+  morto.kill();
+  const tiro = new Projetil(vec(390, 300), vec(1, 0), 2);
+  scene.add(tiro);
+  tiro.onPreUpdate(engine, 16);
+  return { alvoEliminado: vivo.isKilled(), tiroConsumido: tiro.isKilled() };
+};
+window.medirSangue = async () => {
+  const atualizacoesAntes = atualizacoes;
+  const inicio = performance.now();
+  for (let i = 0; i < 4; i++) sangue(scene, vec(200 + i * 100, 300), vec(1, 0), true);
+  const criacao = performance.now() - inicio;
+  const quadros = []; let anterior = performance.now(); let picoAtores = 0;
+  await new Promise(resolve => {
+    function frame(agora) {
+      quadros.push(agora - anterior); anterior = agora;
+      picoAtores = Math.max(picoAtores, scene.actors.length);
+      if (agora - inicio < 1100) requestAnimationFrame(frame); else resolve();
+    }
+    requestAnimationFrame(frame);
+  });
+  quadros.sort((a,b) => a-b);
+  return { criacao, picoAtores, atualizacoes: atualizacoes - atualizacoesAntes, efeitosRestantes: scene.actors.filter(a => a.name === "Efeito de combate").length, p95: quadros[Math.floor(quadros.length*.95)], maiorQuadro: quadros.at(-1) };
+};
+</script></body></html>
