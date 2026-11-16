@@ -1,7 +1,101 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('main page looks correct', async ({ page }) => {
-  await page.goto('http://localhost:4173/');
-  await page.click('#excalibur-play');
-  await expect(page).toHaveScreenshot();
+test("conquistas, recordes e identificação antes da partida", async ({ page }) => {
+  await page.goto("http://127.0.0.1:4173/stickarnage/");
+  await page.locator("#menu-achievements").click();
+  await expect(page.locator(".achievement-card")).toHaveCount(15);
+  await expect(page.locator("#achievement-list")).toContainText("até 3 segundos");
+  await page.screenshot({ path: "test-results/achievements.png" });
+  await page.locator("#achievements-back").click();
+  await page.locator("#menu-ranking").click();
+  await expect(page.locator("#ranking-empty")).toBeVisible();
+  await page.locator("#ranking-back").click();
+  await page.locator("#play").click();
+  await page.locator("#confirm-name").click();
+  await expect(page.locator("#name-panel")).toBeVisible();
+  await page.locator("#player-name").fill("Maria");
+  await page.screenshot({ path: "test-results/name.png" });
+  await page.locator("#confirm-name").click();
+  await page.screenshot({ path: "test-results/loading.png" });
+  await expect(page.locator("#hud")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.locator("#pause-menu").click();
+  await page.locator("#menu-ranking").click();
+  await expect(page.locator("#ranking-list")).toContainText("Maria");
+  await page.screenshot({ path: "test-results/ranking.png" });
+  await page.reload();
+  await page.locator("#menu-ranking").click();
+  await expect(page.locator("#ranking-list")).toContainText("Maria");
+});
+
+test("mira acompanha o mouse, mostra munição e recarga e desaparece na pausa", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("http://127.0.0.1:4173/stickarnage/");
+  await page.locator("#play").click();
+  await page.locator("#player-name").fill("Teste");
+  await page.locator("#confirm-name").click();
+  await expect(page.locator("#hud")).toBeVisible();
+  const area = (await page.locator("#stage").boundingBox())!;
+  await page.mouse.move(area.x + area.width * .5, area.y + area.height * .5);
+  await expect(page.locator("#aim svg")).toBeVisible();
+  await expect(page.locator("#ammo")).toHaveText("18/18");
+  await page.mouse.click(area.x + area.width * .5, area.y + area.height * .5);
+  await expect(page.locator("#ammo")).toHaveText("17/18");
+  await page.keyboard.press("r");
+  await expect(page.locator("#ammo")).toHaveText("RECARGA");
+  await expect(page.locator("#ammo")).toHaveText("18/18");
+  await page.mouse.move(area.x + area.width - 8, area.y + area.height - 8);
+  await expect(page.locator("#aim")).toHaveClass(/invertida/);
+  const contador = (await page.locator(".aim-ammo").boundingBox())!;
+  expect(contador.x + contador.width).toBeLessThan(area.x + area.width);
+  expect(contador.y + contador.height).toBeLessThan(area.y + area.height);
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#aim svg")).toBeHidden();
+  expect(errors).toEqual([]);
+});
+
+test("menu, controles, partida e pausa funcionam", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("http://127.0.0.1:4173/stickarnage/");
+  const intro = page.locator("#excalibur-play");
+  if (await intro.isVisible()) await intro.click();
+  await expect(page.locator("#play")).toBeVisible();
+  await page.screenshot({ path: "test-results/menu.png" });
+  await page.locator("#menu-controls").click();
+  await expect(page.locator("#controls-panel")).toBeVisible();
+  await page.locator("#controls-back").click();
+  await page.locator("#play").click();
+  await page.locator("#player-name").fill("Teste");
+  await page.locator("#confirm-name").click();
+  await expect(page.locator("#hud")).toBeVisible({ timeout: 15000 });
+  await expect(page.locator("#room")).toHaveText("01");
+  await page.keyboard.down("d");
+  await page.waitForTimeout(240);
+  await page.keyboard.up("d");
+  await page.locator("#pause-button").click();
+  await expect(page.locator("#pause-panel")).toBeVisible();
+  await page.screenshot({ path: "test-results/pause.png" });
+  await page.locator("#resume").click();
+  await expect(page.locator("#pause-panel")).toBeHidden();
+  await page.locator("#sound-button").click();
+  await expect(page.locator("#sound-button")).toHaveAttribute("aria-label", "Ativar som");
+  expect(errors).toEqual([]);
+});
+
+test("derrota permite reiniciar a partida", async ({ page }) => {
+  test.setTimeout(90000);
+  await page.goto("http://127.0.0.1:4173/stickarnage/");
+  await page.locator("#play").click();
+  await page.locator("#player-name").fill("Teste");
+  await page.locator("#confirm-name").click();
+  await expect(page.locator("#hud")).toBeVisible();
+  await expect(page.locator("#gameover-panel")).toBeVisible({ timeout: 70000 });
+  await page.screenshot({ path: "test-results/gameover.png" });
+  await page.locator("#retry").click();
+  await page.locator("#player-name").fill("Teste");
+  await page.locator("#confirm-name").click();
+  await expect(page.locator("#hud")).toBeVisible({ timeout: 15000 });
+  await expect(page.locator("#health .life.on")).toHaveCount(3);
 });

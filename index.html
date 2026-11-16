@@ -1,13 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./src/style.css">
-    <title>Excalibur + Vite</title>
+    <meta name="theme-color" content="#090a0d" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <title>Stickarnage</title>
   </head>
   <body>
+    <main id="stage" aria-label="Jogo Stickarnage">
+      <canvas id="game-canvas"></canvas>
+      <div id="ui" class="ui" hidden>
+        <section id="menu" class="screen menu-screen" aria-label="Menu inicial">
+          <div class="logo-wrap" aria-hidden="true">
+            <img class="menu-logo" src="./assets/menus-v1/logo-original.png" alt="" />
+          </div>
+          <div class="menu-actions">
+            <button id="play" class="game-button primary">JOGAR</button>
+            <button id="menu-controls" class="game-button">CONTROLES</button>
+            <button id="menu-achievements" class="game-button">CONQUISTAS</button>
+            <button id="menu-ranking" class="game-button">RECORDES</button>
+          </div>
+        </section>
+        <section id="loading" class="screen loading-screen" hidden aria-label="Carregando partida">
+          <div class="loading-console"><span class="loading-label">CARREGANDO</span><div class="loading-bar"><div></div></div><span class="loading-status">ABRINDO SALA 01</span></div>
+        </section>
+        <section id="hud" class="screen hud-screen" hidden aria-label="Informações da partida">
+          <div class="hud-top">
+            <span class="life-hud">VIDA <strong id="health" aria-label="Vida"></strong></span>
+            <span>SALA <strong id="room">01</strong></span>
+            <span>PTS <strong id="score">0000</strong></span>
+            <button id="pause-button" class="hud-icon" aria-label="Pausar jogo">Ⅱ</button>
+          </div>
+          <div class="hud-bottom">
+            <span id="weapon">PISTOLA</span>
+            <span id="frenzy">FRENESI 0/3</span>
+            <span id="dash">DASH PRONTO</span>
+            <span id="special">ESPECIAL 0/8</span>
+            <button id="sound-button" class="hud-icon" aria-label="Desativar som">♫</button>
+          </div>
+          <div id="room-hint" class="room-hint" hidden>PORTA LIBERADA · AVANCE →</div>
+          <div id="pickup-hint" class="pickup-hint" hidden></div>
+          <div id="frenzy-alert" class="frenzy-alert" hidden>FRENESI</div>
+        </section>
+        <section id="shade" class="screen shade" hidden>
+          <form id="name-panel" class="panel name-panel" hidden novalidate>
+            <h1>SEU NOME</h1>
+            <label for="player-name">Nome no ranking local</label>
+            <input id="player-name" name="player-name" maxlength="16" required autocomplete="nickname" placeholder="JOGADOR" />
+            <p id="name-error" role="alert" hidden>Digite seu nome para começar.</p>
+            <button id="confirm-name" class="game-button primary" type="submit">COMEÇAR</button>
+            <button id="name-back" class="game-button" type="button">VOLTAR</button>
+          </form>
+          <div id="achievements-panel" class="panel collection-panel" hidden>
+            <h1>CONQUISTAS</h1><p id="achievement-count"></p>
+            <div id="achievement-list" class="collection-list"></div>
+            <button id="achievements-back" class="game-button">VOLTAR</button>
+          </div>
+          <div id="ranking-panel" class="panel collection-panel" hidden>
+            <h1>RECORDES</h1><p>Melhor partida por nome · Neste navegador</p>
+            <div class="collection-list"><table><thead><tr><th>#</th><th>NOME</th><th>SALA</th><th>PONTOS</th></tr></thead><tbody id="ranking-list"></tbody></table><p id="ranking-empty">Nenhuma partida registrada ainda.</p></div>
+            <button id="ranking-back" class="game-button">VOLTAR</button>
+          </div>
+          <div id="pause-panel" class="panel" hidden>
+            <h1>PAUSA</h1>
+            <button id="resume" class="game-button primary">CONTINUAR</button>
+            <button id="pause-controls" class="game-button">CONTROLES</button>
+            <button id="pause-menu" class="game-button">MENU</button>
+          </div>
+          <div id="controls-panel" class="panel controls-panel" hidden>
+            <h1>CONTROLES</h1>
+            <p><strong>WASD / SETAS</strong> MOVER</p>
+            <p><strong>MOUSE + CLIQUE</strong> MIRAR E ATIRAR</p>
+            <p><strong>ESPAÇO</strong> DASH</p>
+            <p><strong>E</strong> PEGAR ARMA</p>
+            <p><strong>R</strong> RECARREGAR</p>
+            <p><strong>Q</strong> ESPECIAL (8 KILLS)</p>
+            <p><strong>ESC</strong> PAUSAR</p>
+            <p><strong>M</strong> LIGAR / DESLIGAR SOM</p>
+            <label class="music-control" for="music-volume">MÚSICA <input id="music-volume" type="range" min="0" max="100" step="5" aria-label="Volume da música" /></label>
+            <button id="controls-back" class="game-button primary">VOLTAR</button>
+          </div>
+          <div id="gameover-panel" class="panel gameover-panel" hidden>
+            <h1>FIM DE JOGO</h1>
+            <p>SALAS <strong id="final-room">01</strong> &nbsp; PONTOS <strong id="final-score">0000</strong></p>
+            <button id="retry" class="game-button primary">TENTAR NOVAMENTE</button>
+            <button id="gameover-menu" class="game-button">MENU</button>
+          </div>
+        </section>
+      </div>
+      <aside id="achievement-toast" hidden role="status" aria-live="polite"><span class="achievement-emblem">★</span><div><small>CONQUISTA DESBLOQUEADA</small><strong id="toast-title"></strong><span id="toast-description"></span></div></aside>
+      <div id="aim" class="aim" hidden>
+        <div class="aim-shape" aria-hidden="true">
+          <svg viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 6H6V12 M20 6H26V12 M6 20V26H12 M26 20V26H20 M16 3V9 M16 23V29 M3 16H9 M23 16H29" fill="none" stroke="#08090b" stroke-width="5"/>
+            <path d="M12 6H6V12 M20 6H26V12 M6 20V26H12 M26 20V26H20 M16 3V9 M16 23V29 M3 16H9 M23 16H29" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M14 14H18V18H14Z" fill="#ef2336" stroke="#070709" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="aim-ammo"><span id="ammo">18/18</span><div class="aim-meter"><i></i></div></div>
+      </div>
+      <div id="impact-flash" aria-hidden="true"></div>
+    </main>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
